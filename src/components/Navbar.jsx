@@ -32,10 +32,10 @@ const Navbar = () => {
           My Dashboard
         </a>
         <a
-          href="/signup"
+          href="/login"
           className="bg-gradient-to-r from-purple-500 to-cyan-400 hover:from-purple-600 hover:to-cyan-500 text-white font-semibold px-4 py-2 rounded-lg shadow-lg transition-transform transform hover:scale-105"
         >
-          Sign Up
+          Sign Up/ Login
         </a>
       </div>
 
@@ -52,11 +52,11 @@ const Navbar = () => {
             My Dashboard
           </a>
           <a
-            href="/signup"
+            href="/login"
             className="bg-gradient-to-r w-full flex justify-center from-purple-500 to-cyan-400 hover:from-purple-600 hover:to-cyan-500 text-white font-semibold px-6 py-3 rounded-4xl transition-transform transform hover:scale-105"
             onClick={() => setIsOpen(false)}
           >
-            Sign Up
+            Sign Up/ Login
           </a>
         </div>
       )}
