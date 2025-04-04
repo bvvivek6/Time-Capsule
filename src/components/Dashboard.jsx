@@ -10,12 +10,14 @@ const Dashboard = () => {
     {
       id: 1,
       title: "Letter to Future Me",
+      from: "Myself",
       unlockDate: "2025-12-01",
       description: "Dear future me, I hope you're doing amazing...",
       media: null,
     },
     {
       id: 2,
+      from: "My Best Friend",
       title: "Graduation Video",
       unlockDate: "2024-06-15",
       description: "A heartfelt video message from my graduation day!",
@@ -23,6 +25,7 @@ const Dashboard = () => {
     },
     {
       id: 3,
+      from: "My Best Friend",
       title: "Family Memories",
       unlockDate: "2024-12-20",
       description: "Photos and videos from our unforgettable family trip.",
@@ -45,25 +48,27 @@ const Dashboard = () => {
             return (
               <motion.div
                 key={capsule.id}
-                className={`p-4 sm:p-6 rounded-4xl  transition-all ${
-                  isUnlocked
-                    ? "bg-gradient-to-r from-purple-500 to-cyan-400 text-white shadow-lg"
-                    : "bg-gray-800 text-gray-300"
-                }`}
+                className="p-4 sm:p-1 lg:p-6 rounded-2xl relative transition-all bg-gray-900 text-white"
                 initial={{ opacity: 0, scale: isUnlocked ? 0.85 : 1 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: isUnlocked ? 0.8 : 0, ease: "easeOut" }}
               >
-                <h2 className="text-lg sm:text-2xl font-semibold">
+                {isUnlocked && (
+                  <div className="absolute -top-1 right-0 w-[20px] h-[20px] bg-yellow-500 rounded-full"></div>
+                )}
+                <h2 className="text-2xl sm:text-3xl mb-4 font-semibold tracking-tighter">
                   {capsule.title}
                 </h2>
-                <p className="text-gray-300 text-sm sm:text-base">
+                <p className="text-base sm:text-xl text-gray-200">
+                  From: {capsule.from}
+                </p>
+                <p className="text-sm sm:text-lg text-gray-400">
                   Unlock Date: {capsule.unlockDate}
                 </p>
 
                 {isUnlocked ? (
                   <button
-                    className="mt-3 bg-cyan-50 bg-opacity-50 hover:bg-opacity-70 text-black px-2 py-2 w-full rounded-3xl transition font-mono text-sm sm:text-base"
+                    className="cursor-pointer flex justify-center items-center mx-auto mt-10 bg-gradient-to-r from-yellow-400 to-yellow-600 text-black px-2 py-2 w-[90%] rounded-2xl transition font-mono text-sm sm:text-base"
                     onClick={() => setSelectedCapsule(capsule)}
                   >
                     View Capsule 👀
