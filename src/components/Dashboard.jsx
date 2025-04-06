@@ -1,19 +1,47 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiX, FiMenu } from "react-icons/fi";
 import Navbar from "./Navbar";
+import CreateCapsule from "../components/Createcapsule";
+import { useLocation } from "react-router-dom";
 
 const Dashboard = () => {
+  const location = useLocation();
+  const defaultTab = location.state?.defaultTab || "received";
   const [selectedCapsule, setSelectedCapsule] = useState(null);
+  const [activeTab, setActiveTab] = useState(defaultTab);
 
-  const capsules = [
+  const addNewSentCapsule = (newCapsule) => {
+    setSentCapsules((prevCapsules) => [newCapsule, ...prevCapsules]);
+    setActiveTab("sent");
+  };
+
+  const [sentCapsules, setSentCapsules] = useState([
+    {
+      id: 101,
+      title: "Message to Mom",
+      to: "Vivek",
+      unlockDate: "2025-05-10",
+      description: "Wrote this letter for my mom's birthday.",
+      images: "https://via.placeholder.com/400",
+    },
+    {
+      id: 102,
+      title: "Old Music Video",
+      to: "Arjun",
+      unlockDate: "2024-04-15",
+      description: "Something I recorded years ago!",
+      images: "https://www.w3schools.com/html/mov_bbb.mp4",
+    },
+  ]);
+
+  const receivedCapsules = [
     {
       id: 1,
       title: "Letter to Future Me",
       from: "Myself",
       unlockDate: "2025-12-01",
       description: "Dear future me, I hope you're doing amazing...",
-      media: null,
+      images: [],
     },
     {
       id: 2,
@@ -21,7 +49,7 @@ const Dashboard = () => {
       title: "Graduation Video",
       unlockDate: "2024-06-15",
       description: "A heartfelt video message from my graduation day!",
-      media: "https://www.w3schools.com/html/mov_bbb.mp4",
+      images: "https://www.w3schools.com/html/mov_bbb.mp4",
     },
     {
       id: 3,
@@ -29,65 +57,128 @@ const Dashboard = () => {
       title: "Family Memories",
       unlockDate: "2024-12-20",
       description: "Photos and videos from our unforgettable family trip.",
-      media: "https://via.placeholder.com/400",
+      images: ["https://www.istockphoto.com/"],
     },
   ];
 
   const currentDate = new Date().toISOString().split("T")[0];
+
+  const handleDelete = (id) => {
+    const updated = sentCapsules.filter((capsule) => capsule.id !== id);
+    setSentCapsules(updated);
+  };
+
+  const capsulesToShow =
+    activeTab === "received" ? receivedCapsules : sentCapsules;
+
   return (
     <>
       <Navbar />
-      <section className="items-center h-[100vh] py-20 px-6 font-mono bg-black">
-        <h1 className="text-3xl sm:text-4xl font-bold text-center text-cyan-400 mb-12">
+      <section className="items-center h-full py-20 px-6 font-mono bg-black min-h-screen">
+        <h1 className="text-3xl sm:text-4xl font-bold text-center text-cyan-400 mb-8">
           My Time Capsules
         </h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {capsules.map((capsule) => {
-            const isUnlocked = capsule.unlockDate <= currentDate;
 
-            return (
-              <motion.div
-                key={capsule.id}
-                className="p-4 sm:p-1 lg:p-6 rounded-2xl relative transition-all bg-gray-900 text-white"
-                initial={{ opacity: 0, scale: isUnlocked ? 0.85 : 1 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: isUnlocked ? 0.8 : 0, ease: "easeOut" }}
-              >
-                {isUnlocked && (
-                  <div className="absolute -top-1 right-0 w-[20px] h-[20px] bg-yellow-500 rounded-full"></div>
-                )}
-                <h2 className="text-2xl sm:text-3xl mb-4 font-semibold tracking-tighter">
-                  {capsule.title}
-                </h2>
-                <p className="text-base sm:text-xl text-gray-200">
-                  From: {capsule.from}
-                </p>
-                <p className="text-sm sm:text-lg text-gray-400">
-                  Unlock Date: {capsule.unlockDate}
-                </p>
-
-                {isUnlocked ? (
-                  <button
-                    className="cursor-pointer flex justify-center items-center mx-auto mt-10 bg-gradient-to-r from-yellow-400 to-yellow-600 text-black px-2 py-2 w-[90%] rounded-2xl transition font-mono text-sm sm:text-base"
-                    onClick={() => setSelectedCapsule(capsule)}
-                  >
-                    View Capsule 👀
-                  </button>
-                ) : (
-                  <p className="mt-4 text-gray-500 italic text-sm sm:text-base">
-                    🔒 Locked until {capsule.unlockDate}
-                  </p>
-                )}
-              </motion.div>
-            );
-          })}
+        {/* Toggle Tabs */}
+        <div className="flex justify-center mb-10 gap-4">
+          <button
+            onClick={() => setActiveTab("received")}
+            className={`px-4 py-2 rounded-lg ${
+              activeTab === "received"
+                ? "bg-cyan-400 text-black"
+                : "bg-gray-800 text-white"
+            }`}
+          >
+            📥 Received
+          </button>
+          <button
+            onClick={() => setActiveTab("sent")}
+            className={`px-4 py-2 rounded-lg ${
+              activeTab === "sent"
+                ? "bg-cyan-400 text-black"
+                : "bg-gray-800 text-white"
+            }`}
+          >
+            📤 Sent
+          </button>
+          <button
+            onClick={() => setActiveTab("create")}
+            className={`px-4 py-2 rounded-lg ${
+              activeTab === "create"
+                ? "bg-cyan-400 text-black"
+                : "bg-gray-800 text-white"
+            }`}
+          >
+            Create Capsule +
+          </button>
         </div>
+        {activeTab === "create" ? (
+          <CreateCapsule onCreate={addNewSentCapsule} />
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            {capsulesToShow.map((capsule) => {
+              const isUnlocked = capsule.unlockDate <= currentDate;
 
-        {/* Modal for Viewing Capsule */}
+              return (
+                <motion.div
+                  key={capsule.id}
+                  className={`p-5 rounded-2xl relative ${
+                    isUnlocked
+                      ? "bg-gradient-to-br from-gray-800 to-gray-900"
+                      : "bg-gray-900"
+                  } shadow-lg border border-gray-700 hover:shadow-2xl hover:scale-[1.015] transition-all duration-300 text-white`}
+                  initial={{ opacity: 0, scale: isUnlocked ? 0.95 : 1 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{
+                    duration: isUnlocked ? 0.6 : 0,
+                    ease: "easeOut",
+                  }}
+                >
+                  {activeTab === "sent" && (
+                    <button
+                      className="absolute -right-2 -top-2 cursor-pointer bg-red-500 hover:bg-red-600 pr-2 pl-2 text-white rounded-full shadow-md transition"
+                      onClick={() => handleDelete(capsule.id)}
+                      title="Delete Capsule"
+                    >
+                      X
+                    </button>
+                  )}
+
+                  <h2 className="text-2xl font-bold mb-2 text-cyan-300">
+                    {capsule.title}
+                  </h2>
+
+                  <p className="text-sm text-gray-400 mb-1">
+                    {activeTab === "received"
+                      ? `From: ${capsule.from}`
+                      : `To: ${capsule.to}`}
+                  </p>
+
+                  <p className="mt-3 text-sm italic text-yellow-300">
+                    🔒 {isUnlocked ? "Unlocked" : "Unlocks"} on{" "}
+                    {capsule.unlockDate}
+                  </p>
+
+                  {activeTab === "sent" || isUnlocked ? (
+                    <button
+                      className="cursor-pointer flex justify-center items-center mt-5 bg-cyan-400 hover:bg-cyan-300 text-black px-3 py-2 w-full rounded-xl font-semibold transition-all text-sm shadow-md"
+                      onClick={() => setSelectedCapsule(capsule)}
+                    >
+                      {activeTab === "sent" ? "View" : "View Capsule 👀"}
+                    </button>
+                  ) : (
+                    ""
+                  )}
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
+
         <AnimatePresence>
           {selectedCapsule && (
             <motion.div
-              className="fixed inset-0 flex items-center justify-center bg-opacity-60 backdrop-blur-md px-4 sm:px-6 z-50"
+              className="fixed inset-0 flex items-center justify-center  bg-opacity-70 backdrop-blur-md px-4 sm:px-6 z-50"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -105,24 +196,24 @@ const Dashboard = () => {
                 >
                   ✖
                 </button>
-                <h2 className="text-2xl sm:text-3xl font-bold mb-3">
+                <h2 className="text-2xl font-bold mb-3">
                   {selectedCapsule.title}
                 </h2>
-                <p className="text-gray-300 text-sm sm:text-base">
+                <p className="text-gray-300 text-sm mb-4">
                   {selectedCapsule.description}
                 </p>
 
-                {selectedCapsule.media && (
+                {selectedCapsule.images && (
                   <div className="mt-4">
-                    {selectedCapsule.media.includes(".mp4") ? (
+                    {selectedCapsule.images.includes(".mp4") ? (
                       <video controls className="w-full rounded-lg">
-                        <source src={selectedCapsule.media} type="video/mp4" />
+                        <source src={selectedCapsule.images} type="video/mp4" />
                         Your browser does not support the video tag.
                       </video>
                     ) : (
                       <img
-                        src={selectedCapsule.media}
-                        alt="Capsule Media"
+                        src={selectedCapsule.images}
+                        alt="Capsule images"
                         className="w-full rounded-lg"
                       />
                     )}

@@ -1,8 +1,13 @@
-import React from "react";
+import React, { use } from "react";
 import { motion } from "framer-motion";
 import Navbar from "../components/Navbar";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
+  const navigate = useNavigate();
+  const handleCreateClick = () => {
+    navigate("/dashboard", { state: { defaultTab: "create" } });
+  };
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 font-DM font-mono ">
       <Navbar />
@@ -26,7 +31,7 @@ const Home = () => {
         </motion.p>
 
         <motion.a
-          href="/createcapsule"
+          onClick={handleCreateClick}
           className="absolute bg-gradient-to-r rounded-xl bottom-30 lg:bottom-60 tracking-tighter from-cyan-400 to-purple-500 hover:from-cyan-500 hover:to-purple-600 text-white font-semibold px-6 py-3 shadow-lg transition-transform transform"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
