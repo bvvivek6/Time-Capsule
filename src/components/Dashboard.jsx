@@ -21,7 +21,7 @@ const Dashboard = () => {
       title: "Message to Mom",
       to: "Vivek",
       unlockDate: "2025-05-10",
-      description: "Wrote this letter for my mom's birthday.",
+      message: "Wrote this letter for my mom's birthday.",
       images: "https://via.placeholder.com/400",
     },
     {
@@ -29,7 +29,7 @@ const Dashboard = () => {
       title: "Old Music Video",
       to: "Arjun",
       unlockDate: "2024-04-15",
-      description: "Something I recorded years ago!",
+      message: "Something I recorded years ago!",
       images: "https://www.w3schools.com/html/mov_bbb.mp4",
     },
   ]);
@@ -40,7 +40,7 @@ const Dashboard = () => {
       title: "Letter to Future Me",
       from: "Myself",
       unlockDate: "2025-12-01",
-      description: "Dear future me, I hope you're doing amazing...",
+      message: "Dear future me, I hope you're doing amazing...",
       images: [],
     },
     {
@@ -48,15 +48,15 @@ const Dashboard = () => {
       from: "My Best Friend",
       title: "Graduation Video",
       unlockDate: "2024-06-15",
-      description: "A heartfelt video message from my graduation day!",
-      images: "https://www.w3schools.com/html/mov_bbb.mp4",
+      message: "A heartfelt video message from my graduation day!",
+      images: ["https://www.w3schools.com/html/mov_bbb.mp4"],
     },
     {
       id: 3,
       from: "My Best Friend",
       title: "Family Memories",
       unlockDate: "2024-12-20",
-      description: "Photos and videos from our unforgettable family trip.",
+      message: "Photos and videos from our unforgettable family trip.",
       images: ["https://www.istockphoto.com/"],
     },
   ];
@@ -122,12 +122,8 @@ const Dashboard = () => {
               return (
                 <motion.div
                   key={capsule.id}
-                  className={`p-5 rounded-2xl relative ${
-                    isUnlocked
-                      ? "bg-gradient-to-br from-gray-800 to-gray-900"
-                      : "bg-gray-900"
-                  } shadow-lg border border-gray-700 hover:shadow-2xl hover:scale-[1.015] transition-all duration-300 text-white`}
-                  initial={{ opacity: 0, scale: isUnlocked ? 0.95 : 1 }}
+                  className="p-5 rounded-2xl relative bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg border border-gray-700 hover:shadow-2xl hover:scale-[1.015] transition-all duration-300 text-white"
+                  initial={{ opacity: 0, scale: 1 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{
                     duration: isUnlocked ? 0.6 : 0,
@@ -200,25 +196,22 @@ const Dashboard = () => {
                   {selectedCapsule.title}
                 </h2>
                 <p className="text-gray-300 text-sm mb-4">
-                  {selectedCapsule.description}
+                  {selectedCapsule.message}
                 </p>
 
-                {selectedCapsule.images && (
-                  <div className="mt-4">
-                    {selectedCapsule.images.includes(".mp4") ? (
-                      <video controls className="w-full rounded-lg">
-                        <source src={selectedCapsule.images} type="video/mp4" />
-                        Your browser does not support the video tag.
-                      </video>
-                    ) : (
-                      <img
-                        src={selectedCapsule.images}
-                        alt="Capsule images"
-                        className="w-full rounded-lg"
-                      />
-                    )}
-                  </div>
-                )}
+                {selectedCapsule.images &&
+                  selectedCapsule.images.length > 0 && (
+                    <div className="grid grid-cols-2 gap-4 mt-4">
+                      {selectedCapsule.images.map((imgSrc, index) => (
+                        <img
+                          key={index}
+                          src={imgSrc}
+                          alt={`Capsule image ${index + 1}`}
+                          className="w-full h-36 object-cover rounded-lg"
+                        />
+                      ))}
+                    </div>
+                  )}
               </motion.div>
             </motion.div>
           )}

@@ -48,8 +48,8 @@ const CreateCapsule = ({ onCreate }) => {
       <div className=" flex justify-center font-mono items-center bg-black text-white">
         <motion.div
           className="bg-gray-900 p-6 rounded-xl shadow-lg max-w-lg w-full"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
           <form onSubmit={handleSubmit} className="space-y-5">
