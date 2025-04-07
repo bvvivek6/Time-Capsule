@@ -22,7 +22,7 @@ const Dashboard = () => {
       to: "Vivek",
       unlockDate: "2025-05-10",
       message: "Wrote this letter for my mom's birthday.",
-      images: "https://via.placeholder.com/400",
+      images: ["https://via.placeholder.com"],
     },
     {
       id: 102,
@@ -30,7 +30,7 @@ const Dashboard = () => {
       to: "Arjun",
       unlockDate: "2024-04-15",
       message: "Something I recorded years ago!",
-      images: "https://www.w3schools.com/html/mov_bbb.mp4",
+      images: ["https://www.w3schools.com/html/mov_bbb.mp4"],
     },
   ]);
 
@@ -83,7 +83,7 @@ const Dashboard = () => {
         <div className="flex justify-center mb-10 gap-4">
           <button
             onClick={() => setActiveTab("received")}
-            className={`px-4 py-2 rounded-lg ${
+            className={`px-4 py-2 cursor-pointer rounded-lg ${
               activeTab === "received"
                 ? "bg-cyan-400 text-black"
                 : "bg-gray-800 text-white"
@@ -93,7 +93,7 @@ const Dashboard = () => {
           </button>
           <button
             onClick={() => setActiveTab("sent")}
-            className={`px-4 py-2 rounded-lg ${
+            className={`px-4 py-2 cursor-pointer rounded-lg ${
               activeTab === "sent"
                 ? "bg-cyan-400 text-black"
                 : "bg-gray-800 text-white"
@@ -103,7 +103,7 @@ const Dashboard = () => {
           </button>
           <button
             onClick={() => setActiveTab("create")}
-            className={`px-4 py-2 rounded-lg ${
+            className={`px-4 cursor-pointer py-2 rounded-lg ${
               activeTab === "create"
                 ? "bg-cyan-400 text-black"
                 : "bg-gray-800 text-white"

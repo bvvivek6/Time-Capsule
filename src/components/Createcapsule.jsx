@@ -150,7 +150,7 @@ const CreateCapsule = ({ onCreate }) => {
             </div>
             <motion.button
               type="submit"
-              className="w-full bg-gradient-to-r from-purple-500 to-cyan-400 hover:from-purple-600 hover:to-cyan-500 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition-transform transform hover:scale-105"
+              className="w-full cursor-pointer bg-gradient-to-r from-purple-500 to-cyan-400 hover:from-purple-600 hover:to-cyan-500 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition-transform transform hover:scale-105"
               whileHover={{ scale: 1.0 }}
             >
               Save Capsule 🧧

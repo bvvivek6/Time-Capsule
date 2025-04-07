@@ -9,9 +9,9 @@ const Home = () => {
     navigate("/dashboard", { state: { defaultTab: "create" } });
   };
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 font-DM font-mono ">
+    <div className="min-h-screen font-DM font-mono text-gray-100 bg-[linear-gradient(to_right,_#0A1422,_#000000_50%,_#0A1422)]">
       <Navbar />
-      <section className="flex flex-col items-center h-[90vh] justify-center text-center py-20 px-6 bg-black">
+      <section className="flex flex-col items-center h-[90vh] justify-center text-center py-20 px-6">
         <motion.h1
           className="text-5xl font-bold text-cyan-400 mb-4 tracking-tighter"
           initial={{ filter: "blur(10px)", opacity: 0, y: 20 }}
@@ -39,7 +39,7 @@ const Home = () => {
           Create Your Capsule!🧧
         </motion.a>
       </section>
-      <section className="py-16 px-6 bg-black">
+      <section className="py-16 px-6">
         <h2 className="text-4xl text-center font-bold text-blue-400 mb-10 tracking-tighter">
           So... how does it work?
         </h2>
@@ -71,7 +71,7 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="py-16 px-6 bg-black">
+      <section className="py-16 px-6 ">
         <h2 className="text-4xl font-semibold text-center text-cyan-400 mb-10 tracking-tighter">
           Why time capsule??
         </h2>

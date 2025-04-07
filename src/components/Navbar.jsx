@@ -27,36 +27,49 @@ const Navbar = () => {
       <div className="hidden md:flex items-center gap-6">
         <a
           href="/dashboard"
-          className="text-gray-300 hover:text-cyan-400 transition"
+          className="text-black px-4 py-2 rounded-lg bg-blue-300 transition"
         >
           My Dashboard
         </a>
         <a
           href="/login"
-          className="bg-gradient-to-r from-purple-500 to-cyan-400 hover:from-purple-600 hover:to-cyan-500 text-white font-semibold px-4 py-2 rounded-lg shadow-lg transition-transform transform hover:scale-105"
+          className="bg-blue-300 text-black  px-4 py-2 rounded-lg shadow-lg transition-transform transform hover:scale-105"
         >
-          Sign Up/ Login
+          Sign Up
+        </a>
+        <a
+          href="/"
+          className="bg-red-500 text-white font-semibold px-4 py-2 rounded-lg shadow-lg transition-transform transform hover:scale-105"
+        >
+          logout
         </a>
       </div>
 
       {isOpen && (
         <div
-          className="absolute top-16 right-6 w-[50vw] bg-gray-700 backdrop-blur-2xl p-3.5 rounded-2xl
+          className="absolute top-16 right-6 w-[50vw] bg-gray-800 backdrop-blur-2xl p-3.5 rounded-2xl
          flex flex-col items-center space-y-3 py-6 md:hidden"
         >
           <a
             href="/dashboard"
-            className="text-gray-950 font-semibold w-full hover:text-cyan-400 transition text-lg p-3 rounded-4xl bg-cyan-400 flex  tracking-tighter justify-center"
+            className="text-gray-950 font-semibold w-full transition text-lg p-3 rounded-4xl bg-blue-300 flex  tracking-tighter justify-center"
             onClick={() => setIsOpen(false)}
           >
             My Dashboard
           </a>
           <a
             href="/login"
-            className="bg-gradient-to-r w-full flex justify-center from-purple-500 to-cyan-400 hover:from-purple-600 hover:to-cyan-500 text-white font-semibold px-6 py-3 rounded-4xl transition-transform transform hover:scale-105"
+            className="bg-blue-300 w-full flex justify-center text-black font-semibold px-6 py-3 rounded-4xl transition-transform transform hover:scale-105"
             onClick={() => setIsOpen(false)}
           >
-            Sign Up/ Login
+            Sign Up
+          </a>
+          <a
+            href="/"
+            className="bg-red-500 w-full flex justify-center text-white font-semibold px-6 py-3 rounded-4xl transition-transform transform hover:scale-105"
+            onClick={() => setIsOpen(false)}
+          >
+            Logout
           </a>
         </div>
       )}
