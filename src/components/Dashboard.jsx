@@ -41,7 +41,9 @@ const Dashboard = () => {
       from: "Myself",
       unlockDate: "2025-12-01",
       message: "Dear future me, I hope you're doing amazing...",
-      images: [],
+      images: [
+        "https://static.vecteezy.com/system/resources/thumbnails/045/132/934/small_2x/a-beautiful-picture-of-the-eiffel-tower-in-paris-the-capital-of-france-with-a-wonderful-background-in-wonderful-natural-colors-photo.jpg",
+      ],
     },
     {
       id: 2,
@@ -49,7 +51,14 @@ const Dashboard = () => {
       title: "Graduation Video",
       unlockDate: "2024-06-15",
       message: "A heartfelt video message from my graduation day!",
-      images: ["https://www.w3schools.com/html/mov_bbb.mp4"],
+      images: [
+        "https://static.vecteezy.com/system/resources/thumbnails/045/132/934/small_2x/a-beautiful-picture-of-the-eiffel-tower-in-paris-the-capital-of-france-with-a-wonderful-background-in-wonderful-natural-colors-photo.jpg",
+        "https://static.vecteezy.com/system/resources/thumbnails/045/132/934/small_2x/a-beautiful-picture-of-the-eiffel-tower-in-paris-the-capital-of-france-with-a-wonderful-background-in-wonderful-natural-colors-photo.jpg",
+        "https://static.vecteezy.com/system/resources/thumbnails/045/132/934/small_2x/a-beautiful-picture-of-the-eiffel-tower-in-paris-the-capital-of-france-with-a-wonderful-background-in-wonderful-natural-colors-photo.jpg",
+        "https://static.vecteezy.com/system/resources/thumbnails/045/132/934/small_2x/a-beautiful-picture-of-the-eiffel-tower-in-paris-the-capital-of-france-with-a-wonderful-background-in-wonderful-natural-colors-photo.jpg",
+        "https://static.vecteezy.com/system/resources/thumbnails/045/132/934/small_2x/a-beautiful-picture-of-the-eiffel-tower-in-paris-the-capital-of-france-with-a-wonderful-background-in-wonderful-natural-colors-photo.jpg",
+        "https://static.vecteezy.com/system/resources/thumbnails/045/132/934/small_2x/a-beautiful-picture-of-the-eiffel-tower-in-paris-the-capital-of-france-with-a-wonderful-background-in-wonderful-natural-colors-photo.jpg",
+      ],
     },
     {
       id: 3,
@@ -201,15 +210,25 @@ const Dashboard = () => {
 
                 {selectedCapsule.images &&
                   selectedCapsule.images.length > 0 && (
-                    <div className="grid grid-cols-2 gap-4 mt-4">
-                      {selectedCapsule.images.map((imgSrc, index) => (
-                        <img
-                          key={index}
-                          src={imgSrc}
-                          alt={`Capsule image ${index + 1}`}
-                          className="w-full h-36 object-cover rounded-lg"
-                        />
-                      ))}
+                    <div className="max-h-80 overflow-y-auto pr-2 scrollbar-thin">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+                        {selectedCapsule.images.map((imgSrc, index) => (
+                          <div key={index} className="relative group">
+                            <img
+                              src={imgSrc}
+                              alt={`Capsule image ${index + 1}`}
+                              className="w-full h-36 object-cover rounded-lg shadow-md"
+                            />
+                            <a
+                              href={imgSrc}
+                              download={`capsule-image-${index + 1}.jpg`}
+                              className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition bg-cyan-500 text-white text-sm px-3 py-1 rounded-md shadow-lg hover:bg-cyan-600"
+                            >
+                              Download
+                            </a>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
               </motion.div>
