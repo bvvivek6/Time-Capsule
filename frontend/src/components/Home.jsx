@@ -1,6 +1,6 @@
 import React, { use } from "react";
 import { motion } from "framer-motion";
-import Navbar from "../components/Navbar";
+import Navbar from "./Navbar";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
@@ -32,7 +32,7 @@ const Home = () => {
 
         <motion.a
           onClick={handleCreateClick}
-          className="absolute bg-gradient-to-r rounded-xl bottom-30 lg:bottom-60 tracking-tighter from-cyan-400 to-purple-500 hover:from-cyan-500 hover:to-purple-600 text-white font-semibold px-6 py-3 shadow-lg transition-transform transform"
+          className="absolute border-2 border-b-blue-300 border-t-pink-500  rounded-full bottom-30 cursor-pointer lg:bottom-60 tracking-tighter  text-white font-semibold px-6 py-3 shadow-lg transition-transform transform"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
         >

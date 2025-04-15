@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import Navbar from "../components/Navbar";
+import confetti from "canvas-confetti";
 
 const CreateCapsule = ({ onCreate }) => {
   const [title, setTitle] = useState("");
@@ -35,6 +35,12 @@ const CreateCapsule = ({ onCreate }) => {
     };
 
     onCreate(newCapsule);
+
+    confetti({
+      particleCount: 120,
+      spread: 100,
+      origin: { y: 0.6 },
+    });
 
     setTitle("");
     setMyName("");

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "./Navbar";
-import CreateCapsule from "../components/Createcapsule";
+import CreateCapsule from "./Createcapsule";
 import { useLocation } from "react-router-dom";
 
 const Dashboard = () => {
