@@ -5,7 +5,7 @@ import { FiMenu, FiX } from "react-icons/fi";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <nav className="fixed top-0 left-0 w-full backdrop-blur-2xl bg-opacity-80 font-mono shadow-md py-4 px-6 flex justify-between items-center z-50">
+    <nav className="fixed top-0 left-0 w-full backdrop-blur-2xl bg-opacity-80 font-mono  py-4 px-6 flex justify-between items-center z-50">
       <a href="/" className="text-sm font-bold text-cyan-400">
         TimeCapsule
       </a>
