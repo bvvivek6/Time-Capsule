@@ -20,7 +20,7 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen font-mono text-gray-100 bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 overflow-hidden relative">
+    <div className="min-h-screen py-20 font-mono text-gray-100 bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 overflow-hidden relative">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-blue-500 rounded-full opacity-5 blur-3xl"></div>
         <div className="absolute top-1/2 -left-40 w-96 h-96 bg-cyan-500 rounded-full opacity-5 blur-3xl"></div>
@@ -29,13 +29,12 @@ const Home = () => {
 
       <Navbar />
 
-      <section className="relative flex flex-col items-center min-h-screen justify-center text-center py-10 px-6 pt-4">
+      <section className="relative flex flex-col items-center min-h-[90vh] justify-center text-center px-6 py-4">
         <motion.div
           initial="hidden"
           animate="visible"
           className="flex flex-col items-center"
         >
-          {/* Animated time capsule icon */}
           <motion.div className="mb-8" variants={fadeIn} custom={0}>
             <div className="relative w-24 h-24 mx-auto mb-4">
               <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-full opacity-20 animate-pulse"></div>
@@ -70,7 +69,7 @@ const Home = () => {
 
           <motion.button
             onClick={handleCreateClick}
-            className="relative overflow-hidden group bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold px-8 py-4 rounded-xl shadow-lg transition-all duration-300"
+            className="relative overflow-hidden group bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold px-8 py-4 rounded-full shadow-lg transition-all duration-300"
             variants={fadeIn}
             custom={3}
             whileHover={{ scale: 1.05 }}
@@ -83,17 +82,15 @@ const Home = () => {
           </motion.button>
 
           <motion.div
-            className="absolute bottom-5 left-1/2 transform -translate-x-1/2"
+            className="mt-12 flex flex-col items-center gap-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, y: [0, 10, 0] }}
             transition={{ delay: 1.5, duration: 2, repeat: Infinity }}
           >
-            <div className="flex flex-col items-center gap-2">
-              <span className="text-sm text-gray-200">
-                Scroll to learn more
-              </span>
-              <div className="w-1 h-20 bg-gradient-to-b from-cyan-500 to-transparent rounded-full"></div>
-            </div>
+            <span className="text-sm tracking-tighter text-gray-200">
+              Scroll to learn more
+            </span>
+            <div className="w-1 h-20 bg-gradient-to-b from-cyan-500 to-transparent rounded-full"></div>
           </motion.div>
         </motion.div>
       </section>
@@ -272,25 +269,11 @@ const Home = () => {
           </div>
         </div>
       </section>
-      <section className="py-20 px-6 text-center relative">
-        <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
-        <div className="relative max-w-4xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6 tracking-tighter">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
-              Ready to create your first time capsule?
-            </span>
-          </h2>
-          <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
-            Start preserving memories today for tomorrow's discovery.
+      <section className="py-2 px-6 flex flex-col text-center items-center relative">
+        <div className="relative  max-w-4xl mx-auto">
+          <p className="text-sm text-[#4e6cbe] tracking-tighter w-[50vw] my-3">
+            © {new Date().getFullYear()} TimeCapsule. All rights reserved.
           </p>
-          <motion.button
-            onClick={handleCreateClick}
-            className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold px-8 py-4 rounded-xl shadow-lg transition-all duration-300"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Get Started Now
-          </motion.button>
         </div>
       </section>
     </div>

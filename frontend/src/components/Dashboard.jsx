@@ -60,14 +60,6 @@ const Dashboard = () => {
         "https://static.vecteezy.com/system/resources/thumbnails/045/132/934/small_2x/a-beautiful-picture-of-the-eiffel-tower-in-paris-the-capital-of-france-with-a-wonderful-background-in-wonderful-natural-colors-photo.jpg",
       ],
     },
-    {
-      id: 3,
-      from: "My Best Friend",
-      title: "Family Memories",
-      unlockDate: "2024-12-20",
-      message: "Photos and videos from our unforgettable family trip.",
-      images: ["https://www.istockphoto.com/"],
-    },
   ];
 
   const currentDate = new Date().toISOString().split("T")[0];
@@ -90,10 +82,10 @@ const Dashboard = () => {
           </h1>
 
           <div className="flex justify-center mb-8 ">
-            <div className="inline-flex bg-gray-800 rounded-xl p-1 shadow-lg">
+            <div className="inline-flex bg-gray-800 rounded-full  shadow-lg">
               <button
                 onClick={() => setActiveTab("received")}
-                className={`px-3 py-1 rounded-lg transition-all duration-300 ${
+                className={`px-3 py-1 rounded-full transition-all duration-300 ${
                   activeTab === "received"
                     ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-md"
                     : "text-gray-300 hover:text-white"
@@ -106,7 +98,7 @@ const Dashboard = () => {
               </button>
               <button
                 onClick={() => setActiveTab("sent")}
-                className={`px-3 py-2 rounded-lg transition-all duration-300 ${
+                className={`px-3 py-2 rounded-full transition-all duration-300 ${
                   activeTab === "sent"
                     ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-md"
                     : "text-gray-300 hover:text-white"
@@ -119,7 +111,7 @@ const Dashboard = () => {
               </button>
               <button
                 onClick={() => setActiveTab("create")}
-                className={`px-6 py-3 rounded-lg transition-all duration-300 ${
+                className={`px-6 py-3 rounded-full transition-all duration-300 ${
                   activeTab === "create"
                     ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-md"
                     : "text-gray-300 hover:text-white"
@@ -127,7 +119,7 @@ const Dashboard = () => {
               >
                 <span className="flex items-center gap-2">
                   <span className="text-lg">✨</span>
-                  <span>New</span>
+                  <span>Create</span>
                 </span>
               </button>
             </div>
@@ -293,7 +285,7 @@ const Dashboard = () => {
         <AnimatePresence>
           {selectedCapsule && (
             <motion.div
-              className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 backdrop-blur-sm px-4 sm:px-6 z-50"
+              className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm px-4 sm:px-6 z-50"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}

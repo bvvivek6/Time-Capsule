@@ -107,9 +107,9 @@ const CreateCapsule = ({ onCreate }) => {
   };
 
   return (
-    <div className="flex justify-center font-mono items-center text-white min-h-screen ">
+    <div className="flex justify-center font-mono items-center text-white">
       <motion.div
-        className="bg-gray-900 p-6 sm:p-6 md:p-8 rounded-2xl shadow-2xl max-w-xl w-full border border-gray-800"
+        className="bg-gray-900 p-8 sm:p-6 md:p-8 rounded-2xl shadow-2xl max-w-xl w-full border border-gray-800"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
