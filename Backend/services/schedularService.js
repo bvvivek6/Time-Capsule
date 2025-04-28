@@ -1,49 +1,103 @@
-const cron = require("node-cron");
-const Capsule = require("../models/capsuleModel");
+const schedule = require("node-schedule");
+const TimeCapsule = require("../models/capsuleModel");
 const emailService = require("./emailService");
 
-// Initialize the scheduler that checks for capsules ready to be unlocked
+// Initialize scheduler - check for capsules that need to be unlocked
+exports.initScheduler = async () => {
+  console.log("Initializing capsule scheduler...");
 
-exports.initScheduler = () => {
-  // Run every day at midnight (00:00)
-  cron.schedule("0 0 * * *", async () => {
-    console.log("Running capsule unlock scheduler job...");
-    await unlockReadyCapsules();
+  // Find all capsules that are:
+  // 1. Not unlocked yet
+  // 2. Unlock date is in the past
+  const capsulesToUnlock = await TimeCapsule.find({
+    isUnlocked: false,
+    unlockDate: { $lte: new Date() },
   });
 
-  console.log("Capsule unlock scheduler initialized");
+  console.log(`Found ${capsulesToUnlock.length} capsules to unlock`);
+
+  // Process each capsule
+  for (const capsule of capsulesToUnlock) {
+    capsule.isUnlocked = true;
+    await capsule.save();
+
+    for (const recipient of capsule.recipients) {
+      if (!recipient.notified) {
+        await emailService.sendUnlockNotification(
+          recipient.email,
+          recipient.name,
+          capsule.title,
+          capsule._id
+        );
+        recipient.notified = true;
+      }
+    }
+    await capsule.save();
+  }
+
+  // Schedule future capsules
+  const futureCapsules = await TimeCapsule.find({
+    isUnlocked: false,
+    unlockDate: { $gt: new Date() },
+  });
+
+  console.log(`Scheduling ${futureCapsules.length} future capsules`);
+
+  for (const capsule of futureCapsules) {
+    this.scheduleTask(capsule.unlockDate, async () => {
+      capsule.isUnlocked = true;
+      await capsule.save();
+
+      // Send notifications
+      for (const recipient of capsule.recipients) {
+        if (!recipient.notified) {
+          await emailService.sendUnlockNotification(
+            recipient.email,
+            recipient.name,
+            capsule.title,
+            capsule._id
+          );
+          recipient.notified = true;
+        }
+      }
+      await capsule.save();
+    });
+  }
 };
 
-//Check and unlock capsules that have reached their unlock date
+// Schedule a task to run at a specific date/time
+exports.scheduleTask = (date, task) => {
+  return schedule.scheduleJob(date, task);
+};
 
-const unlockReadyCapsules = async () => {
-  try {
-    const currentDate = new Date();
+exports.scheduleDailyCheck = () => {
+  // Run at 12ap everynighgt
+  schedule.scheduleJob("0 0 * * *", async () => {
+    console.log("Running daily capsule check...");
 
-    // Find all capsules that should be unlocked
-    const capsulesToUnlock = await Capsule.find({
-      isOpen: false,
-      unlockDate: { $lte: currentDate },
+    const capsulesToUnlock = await TimeCapsule.find({
+      isUnlocked: false,
+      unlockDate: { $lte: new Date() },
     });
 
     console.log(`Found ${capsulesToUnlock.length} capsules to unlock`);
 
-    // Process each capsule
     for (const capsule of capsulesToUnlock) {
-      try {
-        // Update capsule status
-        capsule.isOpen = true;
-        await capsule.save();
+      capsule.isUnlocked = true;
+      await capsule.save();
 
-        // Send notification email
-        await emailService.sendCapsuleUnlockedEmail(capsule);
-
-        console.log(`Successfully unlocked capsule ${capsule._id}`);
-      } catch (err) {
-        console.error(`Error processing capsule ${capsule._id}:`, err);
+      for (const recipient of capsule.recipients) {
+        if (!recipient.notified) {
+          await emailService.sendUnlockNotification(
+            recipient.email,
+            recipient.name,
+            capsule.title,
+            capsule._id
+          );
+          recipient.notified = true;
+        }
       }
+      await capsule.save();
     }
-  } catch (error) {
-    console.error("Error in unlockReadyCapsules:", error);
-  }
+  });
 };

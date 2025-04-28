@@ -24,14 +24,6 @@ const Dashboard = () => {
       message: "Wrote this letter for my mom's birthday.",
       images: ["https://via.placeholder.com"],
     },
-    {
-      id: 102,
-      title: "Old Music Video",
-      to: "Arjun",
-      unlockDate: "2024-04-15",
-      message: "Something I recorded years ago!",
-      images: ["https://www.w3schools.com/html/mov_bbb.mp4"],
-    },
   ]);
 
   const receivedCapsules = [
@@ -42,21 +34,6 @@ const Dashboard = () => {
       unlockDate: "2025-12-01",
       message: "Dear future me, I hope you're doing amazing...",
       images: [
-        "https://static.vecteezy.com/system/resources/thumbnails/045/132/934/small_2x/a-beautiful-picture-of-the-eiffel-tower-in-paris-the-capital-of-france-with-a-wonderful-background-in-wonderful-natural-colors-photo.jpg",
-      ],
-    },
-    {
-      id: 2,
-      from: "My Best Friend",
-      title: "Graduation Video",
-      unlockDate: "2024-06-15",
-      message: "A heartfelt video message from my graduation day!",
-      images: [
-        "https://static.vecteezy.com/system/resources/thumbnails/045/132/934/small_2x/a-beautiful-picture-of-the-eiffel-tower-in-paris-the-capital-of-france-with-a-wonderful-background-in-wonderful-natural-colors-photo.jpg",
-        "https://static.vecteezy.com/system/resources/thumbnails/045/132/934/small_2x/a-beautiful-picture-of-the-eiffel-tower-in-paris-the-capital-of-france-with-a-wonderful-background-in-wonderful-natural-colors-photo.jpg",
-        "https://static.vecteezy.com/system/resources/thumbnails/045/132/934/small_2x/a-beautiful-picture-of-the-eiffel-tower-in-paris-the-capital-of-france-with-a-wonderful-background-in-wonderful-natural-colors-photo.jpg",
-        "https://static.vecteezy.com/system/resources/thumbnails/045/132/934/small_2x/a-beautiful-picture-of-the-eiffel-tower-in-paris-the-capital-of-france-with-a-wonderful-background-in-wonderful-natural-colors-photo.jpg",
-        "https://static.vecteezy.com/system/resources/thumbnails/045/132/934/small_2x/a-beautiful-picture-of-the-eiffel-tower-in-paris-the-capital-of-france-with-a-wonderful-background-in-wonderful-natural-colors-photo.jpg",
         "https://static.vecteezy.com/system/resources/thumbnails/045/132/934/small_2x/a-beautiful-picture-of-the-eiffel-tower-in-paris-the-capital-of-france-with-a-wonderful-background-in-wonderful-natural-colors-photo.jpg",
       ],
     },
