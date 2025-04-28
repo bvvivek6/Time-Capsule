@@ -1,4 +1,3 @@
-// services/email.service.js
 const nodemailer = require("nodemailer");
 const scheduleService = require("./schedularService");
 

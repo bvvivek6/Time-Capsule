@@ -1,12 +1,6 @@
-// models/capsule.model.js
 const mongoose = require("mongoose");
 
 const mediaSchema = new mongoose.Schema({
-  type: {
-    type: String,
-    enum: ["image", "video", "audio"],
-    required: true,
-  },
   url: {
     type: String,
     required: true,
@@ -39,19 +33,14 @@ const capsuleSchema = new mongoose.Schema(
       trim: true,
     },
     mediaFiles: [mediaSchema],
-    recipients: [
-      {
-        email: {
-          type: String,
-          required: true,
-        },
-        name: String,
-        notified: {
-          type: Boolean,
-          default: false,
-        },
-      },
-    ],
+    recipientsEmail: {
+      type: String,
+      required: true,
+    },
+    recipientsName: {
+      type: String,
+      required: true,
+    },
     unlockDate: {
       type: Date,
       required: true,
@@ -59,10 +48,6 @@ const capsuleSchema = new mongoose.Schema(
     isUnlocked: {
       type: Boolean,
       default: false,
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now,
     },
   },
   {

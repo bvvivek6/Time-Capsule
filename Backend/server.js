@@ -10,7 +10,6 @@ const authRoutes = require("./routes/authRoutes");
 const capsuleRoutes = require("./routes/capsuleroutes");
 const errorMiddleware = require("./middlewares/errorMiddleware");
 const scheduleService = require("./services/schedularService");
-const { schedule } = require("node-cron");
 const rateLimit = require("express-rate-limit");
 
 const PORT = process.env.PORT || 3000;
@@ -36,9 +35,9 @@ app.use("/api/", limiter);
 app.use("/api/auth", authRoutes);
 app.use("/api/capsules", capsuleRoutes);
 app.use(errorMiddleware);
-// Initialize scheduler
-initScheduler();
-scheduleDailyCheck();
+
+//initScheduler();
+//scheduleDailyCheck();
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

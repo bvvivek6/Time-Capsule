@@ -1,4 +1,3 @@
-// routes/capsule.routes.js
 const express = require("express");
 const capsuleController = require("../controllers/capsuleController");
 const authMiddleware = require("../middlewares/authMiddleware");
@@ -13,5 +12,6 @@ router.post("/", uploadMultiple, capsuleController.createCapsule);
 
 router.get("/", capsuleController.getUserCapsules);
 router.get("/:id", capsuleController.getCapsuleById);
+router.delete("/:id", capsuleController.deleteCapsule);
 
 module.exports = router;

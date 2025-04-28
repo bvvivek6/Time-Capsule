@@ -12,10 +12,31 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: "Timecapsules",
-    format: async (req, file) => file.mimetype.split("/")[1], // Dynamically set format based on file type
+    folder: "time_capsules",
+    format: async (req, file) => {
+      const mimeType = file.mimetype.split("/")[1]; // Get format from MIME type
+      const supportedFormats = [
+        "jpeg",
+        "png",
+        "gif",
+        "jpg",
+        "mp4",
+        "avi",
+        "mp3",
+        "wav",
+      ]; // Example formats
+
+      if (supportedFormats.includes(mimeType)) {
+        return mimeType; // Return MIME type as format
+      } else {
+        throw new Error("Unsupported file format");
+      }
+    },
     public_id: (req, file) => {
-      return file.originalname.split(".")[0] + "-" + Date.now();
+      const cleanName = file.originalname
+        .split(".")[0]
+        .replace(/[^a-zA-Z0-9]/g, "_");
+      return `${cleanName}-${Date.now()}`;
     },
   },
 });
