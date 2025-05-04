@@ -36,7 +36,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/capsules", capsuleRoutes);
 app.use(errorMiddleware);
 
-//initScheduler();
+initScheduler();
 //scheduleDailyCheck();
 
 app.listen(PORT, () => {

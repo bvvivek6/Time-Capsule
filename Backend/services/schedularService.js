@@ -1,33 +1,34 @@
-// const schedule = require("node-schedule");
-// const TimeCapsule = require("../models/capsuleModel");
-// const emailService = require("./emailService");
+const schedule = require("node-schedule");
+const TimeCapsule = require("../models/capsuleModel");
+const emailService = require("./emailService");
 
-// // Initialize scheduler - check for capsules that need to be unlocked
-// exports.initScheduler = async () => {
-//   console.log("Initializing capsule scheduler...");
+// Initialize scheduler - check for capsules that need to be unlocked
+exports.initScheduler = async () => {
+  console.log("Initializing capsule scheduler...");
 
-//   // Find capsules that are:
-//   // 1. Not unlocked yet
-//   // 2. Unlock date is already passed
-//   const capsulesToUnlock = await TimeCapsule.find({
-//     isUnlocked: false,
-//     unlockDate: { $lte: new Date() },
-//   });
+  // Find capsules that are:
+  // 1. Not unlocked yet
+  // 2. Unlock date is already passed
+  const capsulesToUnlock = await TimeCapsule.find({
+    isUnlocked: false,
+    unlockDate: { $lte: new Date() },
+  });
 
-//   console.log(`Found ${capsulesToUnlock.length} capsules to unlock`);
+  console.log(`Found ${capsulesToUnlock.length} capsules to unlock`);
 
-//   for (const capsule of capsulesToUnlock) {
-//     capsule.isUnlocked = true;
-//     await capsule.save();
+  for (const capsule of capsulesToUnlock) {
+    capsule.isUnlocked = true;
+    await capsule.save();
 
-//     // Send unlock email
-//     await emailService.sendUnlockNotification(
-//       capsule.recipientsEmail,
-//       capsule.recipientsName,
-//       capsule.title,
-//       capsule._id
-//     );
-//   }
+    // Send unlock email
+    await emailService.sendUnlockNotification(
+      capsule.recipientsEmail,
+      capsule.recipientsName,
+      capsule.title,
+      capsule._id
+    );
+  }
+};
 
 //   // Schedule future capsules
 //   const futureCapsules = await TimeCapsule.find({
