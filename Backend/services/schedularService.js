@@ -28,59 +28,57 @@ exports.initScheduler = async () => {
       capsule._id
     );
   }
+  // Schedule future capsules
+  const futureCapsules = await TimeCapsule.find({
+    isUnlocked: false,
+    unlockDate: { $gt: new Date() },
+  });
+
+  console.log(`Scheduling ${futureCapsules.length} future capsules`);
+
+  for (const capsule of futureCapsules) {
+    this.scheduleTask(capsule.unlockDate, async () => {
+      capsule.isUnlocked = true;
+      await capsule.save();
+
+      // Send unlock email
+      await emailService.sendUnlockNotification(
+        capsule.recipientsEmail,
+        capsule.recipientsName,
+        capsule.title,
+        capsule._id
+      );
+    });
+  }
 };
 
-//   // Schedule future capsules
-//   const futureCapsules = await TimeCapsule.find({
-//     isUnlocked: false,
-//     unlockDate: { $gt: new Date() },
-//   });
+exports.scheduleTask = (date, task) => {
+  return schedule.scheduleJob(date, task);
+};
 
-//   console.log(`Scheduling ${futureCapsules.length} future capsules`);
+exports.scheduleDailyCheck = () => {
+  // Run every day at 12:00 AM
+  schedule.scheduleJob("0 0 * * *", async () => {
+    console.log("Running daily capsule check...");
 
-//   for (const capsule of futureCapsules) {
-//     this.scheduleTask(capsule.unlockDate, async () => {
-//       capsule.isUnlocked = true;
-//       await capsule.save();
+    const capsulesToUnlock = await TimeCapsule.find({
+      isUnlocked: true,
+      unlockDate: { $lte: new Date() },
+    });
 
-//       // Send unlock email
-//       await emailService.sendUnlockNotification(
-//         capsule.recipientsEmail,
-//         capsule.recipientsName,
-//         capsule.title,
-//         capsule._id
-//       );
-//     });
-//   }
-// };
+    console.log(`Found ${capsulesToUnlock.length} capsules to unlock`);
 
-// exports.scheduleTask = (date, task) => {
-//   return schedule.scheduleJob(date, task);
-// };
+    for (const capsule of capsulesToUnlock) {
+      capsule.isUnlocked = true;
+      await capsule.save();
 
-// exports.scheduleDailyCheck = () => {
-//   // Run every day at 12:00 AM
-//   schedule.scheduleJob("0 0 * * *", async () => {
-//     console.log("Running daily capsule check...");
-
-//     const capsulesToUnlock = await TimeCapsule.find({
-//       isUnlocked: true,
-//       unlockDate: { $lte: new Date() },
-//     });
-
-//     console.log(`Found ${capsulesToUnlock.length} capsules to unlock`);
-
-//     for (const capsule of capsulesToUnlock) {
-//       capsule.isUnlocked = true;
-//       await capsule.save();
-
-//       // Send unlock email
-//       await emailService.sendUnlockNotification(
-//         capsule.recipientsEmail,
-//         capsule.recipientsName,
-//         capsule.title,
-//         capsule._id
-//       );
-//     }
-//   });
-// };
+      // Send unlock email
+      await emailService.sendUnlockNotification(
+        capsule.recipientsEmail,
+        capsule.recipientsName,
+        capsule.title,
+        capsule._id
+      );
+    }
+  });
+};

@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import Navbar from "./Navbar";
 import { useNavigate } from "react-router-dom";
 import { Clock, Lock, Shield, Mail, Gift } from "lucide-react";
+import { BoxesCore } from "./BoxCore";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen py-20 font-mono text-gray-100 bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 overflow-hidden relative">
+    <div className="min-h-screen py-20 font-mono text-gray-100 bg-[#000000]  overflow-hidden relative">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-blue-500 rounded-full opacity-5 blur-3xl"></div>
         <div className="absolute top-1/2 -left-40 w-96 h-96 bg-cyan-500 rounded-full opacity-5 blur-3xl"></div>
@@ -30,10 +31,11 @@ const Home = () => {
       <Navbar />
 
       <section className="relative flex flex-col items-center min-h-[90vh] justify-center text-center px-6 py-4">
+        <BoxesCore />
         <motion.div
           initial="hidden"
           animate="visible"
-          className="flex flex-col items-center"
+          className="flex flex-col items-center z-20"
         >
           <motion.div className="mb-8" variants={fadeIn} custom={0}>
             <div className="relative w-24 h-24 mx-auto mb-4">
@@ -45,7 +47,7 @@ const Home = () => {
           </motion.div>
 
           <motion.h1
-            className="text-4xl md:text-6xl font-bold mb-4 tracking-tighter"
+            className="text-3xl md:text-6xl font-bold mb-4 tracking-tighter"
             variants={fadeIn}
             custom={1}
           >
@@ -59,7 +61,7 @@ const Home = () => {
           </motion.h1>
 
           <motion.p
-            className="text-lg text-white mb-10 max-w-xl tracking-tighter"
+            className="text-sm text-white mb-10 max-w-xl tracking-tighter"
             variants={fadeIn}
             custom={2}
           >
@@ -87,7 +89,7 @@ const Home = () => {
             animate={{ opacity: 1, y: [0, 10, 0] }}
             transition={{ delay: 1.5, duration: 2, repeat: Infinity }}
           >
-            <span className="text-sm tracking-tighter text-gray-200">
+            <span className="text-xs tracking-tighter text-gray-200">
               Scroll to learn more
             </span>
             <div className="w-1 h-20 bg-gradient-to-b from-cyan-500 to-transparent rounded-full"></div>

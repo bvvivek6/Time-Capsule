@@ -49,7 +49,7 @@ const Navbar = () => {
       initial="hidden"
       animate="visible"
       variants={navbarVariants}
-      className="w-full fixed top-0 z-50 px-4 py-2  transition-all duration-300 backdrop-blur-xl"
+      className="w-full fixed top-0 z-50 px-4 py-2  transition-all duration-300 backdrop-blur-xl z-50"
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">

@@ -37,7 +37,7 @@ app.use("/api/capsules", capsuleRoutes);
 app.use(errorMiddleware);
 
 initScheduler();
-//scheduleDailyCheck();
+scheduleDailyCheck();
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
