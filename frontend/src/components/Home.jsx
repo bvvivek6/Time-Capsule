@@ -30,7 +30,7 @@ const Home = () => {
 
       <Navbar />
 
-      <section className="relative flex flex-col items-center min-h-[90vh] justify-center text-center px-6 py-4">
+      <section className="relative flex flex-col items-center min-h-[90vh] justify-center text-center  px-6 py-4">
         <BoxesCore />
         <motion.div
           initial="hidden"
@@ -82,18 +82,47 @@ const Home = () => {
               Create Your Capsule <Gift size={20} />
             </span>
           </motion.button>
+          <div className="mt-12 flex flex-col items-center gap-3">
+            <motion.span
+              className="text-xs tracking-wider text-cyan-400 uppercase"
+              animate={{ opacity: [0, 1, 0] }}
+              transition={{ duration: 1.4, repeat: Infinity, ease: "easeOut" }}
+            >
+              Scroll to explore
+            </motion.span>
 
-          <motion.div
-            className="mt-12 flex flex-col items-center gap-2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1, y: [0, 10, 0] }}
-            transition={{ delay: 1.5, duration: 2, repeat: Infinity }}
-          >
-            <span className="text-xs tracking-tighter text-gray-200">
-              Scroll to learn more
-            </span>
-            <div className="w-1 h-20 bg-gradient-to-b from-cyan-500 to-transparent rounded-full"></div>
-          </motion.div>
+            <motion.div
+              initial={{ opacity: 0, scaleY: 0.5 }}
+              animate={{ opacity: 1, scaleY: 1 }}
+              transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+              whileHover={{ scale: 1.1, rotate: 2 }}
+              className="relative w-1 h-28 rounded-full bg-gradient-to-b from-cyan-400 to-transparent shadow-[0_0_24px_rgba(34,211,238,0.8)]"
+            >
+              <motion.div
+                className="absolute inset-0 rounded-full blur-xl bg-cyan-500 opacity-40 z-0"
+                animate={{ opacity: [0, 0.8, 0] }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 1.2,
+                  ease: "easeInOut",
+                }}
+              />
+
+              <motion.div
+                className="absolute top-0 left-0 w-full h-6 bg-cyan-400 rounded-full blur-xs z-10"
+                initial={{ y: "100%" }}
+                animate={{ y: "-50%", opacity: [0, 1, 0] }}
+                transition={{
+                  duration: 1.4,
+                  repeat: Infinity,
+                  repeatType: "loop",
+                  ease: "linear",
+                }}
+              />
+
+              <motion.div className="absolute left-1/2 top-full w-4 h-4 -translate-x-1/2 -translate-y-1/2 border-2 border-cyan-400 rounded-full animate-ping z-20" />
+            </motion.div>
+          </div>
         </motion.div>
       </section>
 
