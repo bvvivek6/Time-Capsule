@@ -1,4 +1,3 @@
-// controllers/capsule.controller.js
 const TimeCapsule = require("../models/capsuleModel");
 const cloudinary = require("../config/cloudinary");
 const emailService = require("../services/emailService");

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000",
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
 export default function AuthPage() {
@@ -38,7 +38,7 @@ export default function AuthPage() {
     setLoading(true);
 
     try {
-      const endpoint = isLogin ? "api/auth/login" : "api/auth/signup";
+      const endpoint = isLogin ? "/login" : "/signup";
       console.log(`Sending request to ${api.defaults.baseURL}${endpoint}`);
 
       const requestData = isLogin

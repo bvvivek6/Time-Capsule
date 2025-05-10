@@ -21,8 +21,14 @@ app.get("/", (req, res) => {
 //connet to db
 require("./config/db");
 
-//middlewares
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.FRONT_END_URL,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
