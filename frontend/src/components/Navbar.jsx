@@ -1,13 +1,42 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
-import { User, Clock, LogOut, ChevronDown } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { User, Clock, LogOut, ChevronDown, LogIn } from "lucide-react";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
 
+  const navigate = useNavigate();
   const profileRef = useRef(null);
+
+  useEffect(() => {
+    checkAuthStatus();
+  }, []);
+
+  const checkAuthStatus = () => {
+    const token = localStorage.getItem("token");
+    const userData = localStorage.getItem("user");
+
+    if (token && userData) {
+      setIsAuthenticated(true);
+      setUser(JSON.parse(userData));
+    } else {
+      setIsAuthenticated(false);
+      setUser(null);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setIsAuthenticated(false);
+    setUser(null);
+    setShowProfileMenu(false);
+    navigate("/");
+  };
 
   // Close profile menu when clicking outside
   useEffect(() => {
@@ -20,7 +49,6 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [profileRef]);
 
-  // Animation variants
   const navbarVariants = {
     hidden: { opacity: 0, y: -20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
@@ -49,7 +77,7 @@ const Navbar = () => {
       initial="hidden"
       animate="visible"
       variants={navbarVariants}
-      className="w-full fixed top-0  px-4 py-2  transition-all duration-300 backdrop-blur-xl z-50"
+      className="w-full fixed top-0 px-4 py-2 transition-all duration-300 backdrop-blur-xl z-50"
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
@@ -65,56 +93,73 @@ const Navbar = () => {
         </Link>
 
         <div className="flex items-center gap-4">
-          <Link
-            to="/dashboard"
-            className="hidden md:block px-4 py-2 text-sm bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-white border border-cyan-500/40 rounded-full hover:from-cyan-500/30 hover:to-blue-500/30 transition-colors"
-          >
-            Dashboard
-          </Link>
-
-          <div className="relative" ref={profileRef}>
-            <button
-              onClick={() => setShowProfileMenu(!showProfileMenu)}
-              className="flex items-center gap-2 px-3 py-2 rounded-full bg-gradient-to-r from-cyan-500/20 to-blue-500/20  transition-colors"
-            >
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                <User size={16} className="text-white" />
-              </div>
-              <ChevronDown
-                size={16}
-                className={`text-white transition-transform duration-300 ${
-                  showProfileMenu ? "rotate-180" : ""
-                }`}
-              />
-            </button>
-
-            {/* Profile Dropdown Menu */}
-            <motion.div
-              initial="hidden"
-              animate={showProfileMenu ? "visible" : "hidden"}
-              variants={dropdownVariants}
-              className="absolute right-0 mt-2 w-48 py-2 bg-gray-800 rounded-xl shadow-xl border border-gray-700 z-50"
-            >
-              <div className="px-4 py-2 border-b border-gray-700">
-                <p className="text-sm font-medium text-white">Vivek</p>
-                <p className="text-xs text-gray-400">vivek@gmail.com</p>
-              </div>
-
+          {isAuthenticated ? (
+            <>
               <Link
                 to="/dashboard"
-                className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-cyan-400"
+                className="hidden md:block px-4 py-2 text-sm bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-white border border-cyan-500/40 rounded-full hover:from-cyan-500/30 hover:to-blue-500/30 transition-colors"
               >
-                <Clock size={16} />
-                My Capsules
+                Dashboard
               </Link>
 
-              <div className="border-t border-gray-700 mt-1"></div>
-              <button className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-400 hover:bg-gray-700">
-                <LogOut size={16} />
-                Sign Out
-              </button>
-            </motion.div>
-          </div>
+              <div className="relative" ref={profileRef}>
+                <button
+                  onClick={() => setShowProfileMenu(!showProfileMenu)}
+                  className="flex items-center gap-2 px-3 py-2 rounded-full bg-gradient-to-r from-cyan-500/20 to-blue-500/20 transition-colors"
+                >
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                    <User size={16} className="text-white" />
+                  </div>
+                  <ChevronDown
+                    size={16}
+                    className={`text-white transition-transform duration-300 ${
+                      showProfileMenu ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                <motion.div
+                  initial="hidden"
+                  animate={showProfileMenu ? "visible" : "hidden"}
+                  variants={dropdownVariants}
+                  className="absolute right-0 mt-2 w-48 py-2 bg-gray-800 rounded-xl shadow-xl border border-gray-700 z-50"
+                >
+                  <div className="px-4 py-2 border-b border-gray-700">
+                    <p className="text-sm font-medium text-white">
+                      {user?.name || "User"}
+                    </p>
+                    <p className="text-xs text-gray-400">{user?.email || ""}</p>
+                  </div>
+
+                  <Link
+                    to="/dashboard"
+                    className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-cyan-400"
+                    onClick={() => setShowProfileMenu(false)}
+                  >
+                    <Clock size={16} />
+                    My Capsules
+                  </Link>
+
+                  <div className="border-t border-gray-700 mt-1"></div>
+                  <button
+                    onClick={handleLogout}
+                    className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-400 hover:bg-gray-700"
+                  >
+                    <LogOut size={16} />
+                    Sign Out
+                  </button>
+                </motion.div>
+              </div>
+            </>
+          ) : (
+            <Link
+              to="/login"
+              className="flex items-center gap-2 px-4 py-2 text-sm bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-full hover:from-cyan-600 hover:to-blue-600 transition-colors"
+            >
+              <LogIn size={16} />
+              Sign In/Login
+            </Link>
+          )}
         </div>
       </div>
 
@@ -126,18 +171,33 @@ const Navbar = () => {
         className="md:hidden overflow-hidden"
       >
         <div className="bg-gray-900/95 backdrop-blur-md shadow-lg border-t border-gray-800 mt-2 rounded-lg">
-          <button className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-400 hover:bg-gray-700">
-            <LogOut size={16} />
-            Sign Out
-          </button>
-          <div className="border-t border-gray-700 mt-1"></div>
-          <Link
-            to="/dashboard"
-            className="block px-4 py-3 text-gray-300 hover:text-cyan-400"
-            onClick={() => setIsOpen(false)}
-          >
-            Dashboard
-          </Link>
+          {isAuthenticated ? (
+            <>
+              <Link
+                to="/dashboard"
+                className="block px-4 py-3 text-gray-300 hover:text-cyan-400"
+                onClick={() => setIsOpen(false)}
+              >
+                Dashboard
+              </Link>
+              <div className="border-t border-gray-700"></div>
+              <button
+                onClick={handleLogout}
+                className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-400 hover:bg-gray-700"
+              >
+                <LogOut size={16} />
+                Sign Out
+              </button>
+            </>
+          ) : (
+            <Link
+              to="/auth"
+              className="block px-4 py-3 text-cyan-400 hover:text-cyan-300"
+              onClick={() => setIsOpen(false)}
+            >
+              Sign In / Sign Up
+            </Link>
+          )}
         </div>
       </motion.div>
     </motion.nav>

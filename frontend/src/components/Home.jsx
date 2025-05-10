@@ -1,14 +1,24 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Navbar from "./Navbar";
-import { useNavigate } from "react-router-dom";
 import { Clock, Lock, Shield, Mail, Gift } from "lucide-react";
 import { BoxesCore } from "./BoxCore";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000",
+});
 
 const Home = () => {
   const navigate = useNavigate();
   const handleCreateClick = () => {
-    navigate("/dashboard", { state: { defaultTab: "create" } });
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/dashboard", { state: { defaultTab: "create" } });
+    } else {
+      navigate("/login");
+    }
   };
 
   const fadeIn = {
