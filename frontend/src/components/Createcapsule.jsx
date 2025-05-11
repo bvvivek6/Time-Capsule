@@ -15,17 +15,20 @@ import {
 } from "lucide-react";
 
 const CreateCapsule = ({ onCreate }) => {
-  const [title, setTitle] = useState("");
-  const [sentBy, setMyName] = useState("");
-  const [recipientsName, setReName] = useState("");
-  const [recipientsEmail, setEmail] = useState("");
-  const [unlockDate, setUnlockDate] = useState("");
-  const [message, setMessage] = useState("");
   const [images, setImages] = useState([]);
   const [imageFiles, setImageFiles] = useState([]);
   const [formStep, setFormStep] = useState(1);
   const [dateInputFocused, setDateInputFocused] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [form, setForm] = useState({
+    title: "",
+    sentBy: "",
+    recipientsName: "",
+    recipientsEmail: "",
+    unlockDate: "",
+    message: "",
+  });
 
   const totalSteps = 2;
 
@@ -50,36 +53,47 @@ const CreateCapsule = ({ onCreate }) => {
     setFormStep(formStep - 1);
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
       const formData = new FormData();
-      formData.append("title", title);
-      formData.append("sentBy", sentBy);
-      formData.append("recipientsName", recipientsName);
-      formData.append("recipientsEmail", recipientsEmail);
-      formData.append("unlockDate", unlockDate);
-      formData.append("message", message);
+      formData.append("title", form.title);
+      formData.append("sentBy", form.sentBy);
+      formData.append("recipientsName", form.recipientsName);
+      formData.append("recipientsEmail", form.recipientsEmail);
+      formData.append("unlockDate", form.unlockDate);
+      formData.append("message", form.message);
 
       const token = localStorage.getItem("token");
 
-      // Append all image files - matches the field name expected by multer in the backend
+      // Check the unlock date to be greater than the current date
+      const currentDate = new Date();
+      const unlockDateObj = new Date(form.unlockDate);
+      if (unlockDateObj <= currentDate) {
+        toast.error("Unlock date must be greater than the current date.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Append all image files by multer in the backend
       imageFiles.forEach((file) => {
         formData.append("mediaFiles", file);
       });
 
-      // Send request to the backend
-      const response = await axios.post(
-        `${import.meta.env.VITE_APP_URL}/capsules`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const baseUrl = import.meta.env.VITE_API_URL;
+      const response = await axios.post(`${baseUrl}/capsules`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       if (onCreate) {
         const newCapsule = {
           ...response.data.capsule,
@@ -97,18 +111,21 @@ const CreateCapsule = ({ onCreate }) => {
 
       toast.success("Time capsule Created successfully!🎊");
 
-      setTitle("");
-      setMyName("");
-      setReName("");
-      setEmail("");
-      setUnlockDate("");
-      setMessage("");
+      setForm({
+        title: "",
+        sentBy: "",
+        recipientsName: "",
+        recipientsEmail: "",
+        unlockDate: "",
+        message: "",
+      });
+
       setImages([]);
       setImageFiles([]);
       setFormStep(1);
     } catch (error) {
       console.error("Error creating time capsule:", error);
-      alert("Failed to create time capsule. Please try again.");
+      toast.error("Failed to create time capsule. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -185,8 +202,9 @@ const CreateCapsule = ({ onCreate }) => {
                 <input
                   type="text"
                   placeholder="Title of your time capsule"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
+                  value={form.title}
+                  name="title"
+                  onChange={handleChange}
                   required
                   className="w-full p-3 pl-10 rounded-lg text-sm bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-cyan-400 focus:outline-none border border-gray-700 transition-all duration-300"
                 />
@@ -197,8 +215,9 @@ const CreateCapsule = ({ onCreate }) => {
                 <input
                   type="text"
                   placeholder="Your name"
-                  value={sentBy}
-                  onChange={(e) => setMyName(e.target.value)}
+                  value={form.sentBy}
+                  name="sentBy"
+                  onChange={handleChange}
                   required
                   className="w-full p-3 pl-10  rounded-lg bg-gray-800 text-white text-sm placeholder-gray-400 focus:ring-2 focus:ring-cyan-400 focus:outline-none border border-gray-700 transition-all duration-300"
                 />
@@ -209,8 +228,9 @@ const CreateCapsule = ({ onCreate }) => {
                 <input
                   type="text"
                   placeholder="Recipient's name"
-                  value={recipientsName}
-                  onChange={(e) => setReName(e.target.value)}
+                  value={form.recipientsName}
+                  name="recipientsName"
+                  onChange={handleChange}
                   required
                   className="w-full p-3 pl-10 rounded-lg text-sm bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-cyan-400 focus:outline-none border border-gray-700 transition-all duration-300"
                 />
@@ -221,8 +241,9 @@ const CreateCapsule = ({ onCreate }) => {
                 <input
                   type="email"
                   placeholder="Recipient's Email"
-                  value={recipientsEmail}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={form.recipientsEmail}
+                  name="recipientsEmail"
+                  onChange={handleChange}
                   required
                   className="w-full p-3 pl-10 rounded-lg text-sm bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-cyan-400 focus:outline-none border border-gray-700 transition-all duration-300"
                 />
@@ -232,20 +253,21 @@ const CreateCapsule = ({ onCreate }) => {
                 <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-cyan-400 w-5 h-5" />
                 <input
                   type="date"
-                  value={unlockDate}
-                  onChange={(e) => setUnlockDate(e.target.value)}
+                  value={form.unlockDate}
+                  name="unlockDate"
+                  onChange={handleChange}
                   onFocus={() => setDateInputFocused(true)}
                   onBlur={() => setDateInputFocused(false)}
                   required
                   className={`w-full p-3 pl-10 rounded-lg bg-gray-800 text-white focus:ring-2 focus:ring-cyan-400 focus:outline-none border border-gray-700 transition-all duration-300 
                     ${
-                      !dateInputFocused && !unlockDate
+                      !dateInputFocused && !form.unlockDate
                         ? "text-gray-400"
                         : "text-white"
                     }`}
                   placeholder="Select unlock date"
                 />
-                {!dateInputFocused && !unlockDate && (
+                {!dateInputFocused && !form.unlockDate && (
                   <span className="absolute left-10 text-sm md:right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none">
                     Select unlock date
                   </span>
@@ -280,8 +302,9 @@ const CreateCapsule = ({ onCreate }) => {
                 </label>
                 <textarea
                   placeholder="Write your message to the future..."
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
+                  value={form.message}
+                  name="message"
+                  onChange={handleChange}
                   required
                   className="w-full p-4 rounded-lg text-sm bg-gray-800 text-white placeholder-gray-400 h-48 focus:ring-2 focus:ring-cyan-400 focus:outline-none border border-gray-700 transition-all duration-300"
                 ></textarea>

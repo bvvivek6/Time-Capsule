@@ -4,11 +4,6 @@ import Navbar from "./Navbar";
 import { Clock, Lock, Shield, Mail, Gift } from "lucide-react";
 import { BoxesCore } from "./BoxCore";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000",
-});
 
 const Home = () => {
   const navigate = useNavigate();
@@ -314,6 +309,17 @@ const Home = () => {
         <div className="relative  max-w-4xl mx-auto">
           <p className="text-sm text-[#4e6cbe] tracking-tighter w-[50vw] my-3">
             © {new Date().getFullYear()} TimeCapsule. All rights reserved.
+            <p>
+              Made with ❤️ by{" "}
+              <a
+                href="https://www.github.com/bvvivek6"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-cyan-400 hover:text-cyan-500 transition-colors duration-300"
+              >
+                Vivek
+              </a>
+            </p>
           </p>
         </div>
       </section>
