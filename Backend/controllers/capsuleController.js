@@ -5,8 +5,14 @@ const emailService = require("../services/emailService");
 //
 exports.createCapsule = async (req, res, next) => {
   try {
-    const { title, message, recipientsEmail, recipientsName, unlockDate } =
-      req.body;
+    const {
+      title,
+      message,
+      sentBy,
+      recipientsEmail,
+      recipientsName,
+      unlockDate,
+    } = req.body;
     const mediaFiles = [];
 
     if (req.files && req.files.length > 0) {
@@ -22,7 +28,8 @@ exports.createCapsule = async (req, res, next) => {
 
     const capsule = new TimeCapsule({
       userId: req.user.id,
-      sentBy: req.user.id,
+      sentById: req.user.id,
+      sentBy,
       title,
       message,
       mediaFiles,
@@ -42,14 +49,28 @@ exports.createCapsule = async (req, res, next) => {
     next(error);
   }
 };
-// Get all capsules created by logged-in user
+
+// Get all capsules sent and received by the logged-in user
 exports.getUserCapsules = async (req, res, next) => {
   try {
-    const capsules = await TimeCapsule.find({ userId: req.user.id }).sort({
+    const userId = req.user.id;
+    const userEmail = req.user.email;
+
+    const sentCapsules = await TimeCapsule.find({ sentById: userId }).sort({
       createdAt: -1,
     });
 
-    res.status(200).json({ capsules });
+    // Capsules received by this user's email
+    const receivedCapsules = await TimeCapsule.find({
+      recipientsEmail: userEmail,
+    }).sort({
+      createdAt: -1,
+    });
+
+    res.status(200).json({
+      sent: sentCapsules,
+      received: receivedCapsules,
+    });
   } catch (error) {
     console.error(error);
     next(error);

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { User, Clock, LogOut, ChevronDown, LogIn } from "lucide-react";
+import { toast } from "react-toastify";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,12 +31,18 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setIsAuthenticated(false);
-    setUser(null);
-    setShowProfileMenu(false);
-    navigate("/");
+    try {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      setIsAuthenticated(false);
+      setUser(null);
+      setShowProfileMenu(false);
+      navigate("/");
+      toast.success("Logged Out Successfully!");
+    } catch (err) {
+      toast.error("Error Logging Out!");
+      console.error("Logout error:", err);
+    }
   };
 
   // Close profile menu when clicking outside

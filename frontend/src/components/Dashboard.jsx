@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "./Navbar";
 import CreateCapsule from "./Createcapsule";
 import { useLocation } from "react-router-dom";
+import axios from "axios";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -15,29 +16,30 @@ const Dashboard = () => {
     setActiveTab("sent");
   };
 
-  const [sentCapsules, setSentCapsules] = useState([
-    {
-      id: 101,
-      title: "Message to Mom",
-      to: "Vivek",
-      unlockDate: "2025-05-10",
-      message: "Wrote this letter for my mom's birthday.",
-      images: ["https://via.placeholder.com"],
-    },
-  ]);
+  const [sentCapsules, setSentCapsules] = useState([]);
+  const [receivedCapsules, setReceivedCapsules] = useState([]);
 
-  const receivedCapsules = [
-    {
-      id: 1,
-      title: "Letter to Future Me",
-      from: "Myself",
-      unlockDate: "2025-12-01",
-      message: "Dear future me, I hope you're doing amazing...",
-      images: [
-        "https://static.vecteezy.com/system/resources/thumbnails/045/132/934/small_2x/a-beautiful-picture-of-the-eiffel-tower-in-paris-the-capital-of-france-with-a-wonderful-background-in-wonderful-natural-colors-photo.jpg",
-      ],
-    },
-  ];
+  useEffect(() => {
+    const fetchCapsules = async () => {
+      const token = localStorage.getItem("token");
+
+      try {
+        const baseUrl = import.meta.env.VITE_API_URL;
+        const response = await axios.get(`${baseUrl}/capsules`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setSentCapsules(response.data.sent);
+        setReceivedCapsules(response.data.received);
+      } catch (err) {
+        console.error("Error fetching capsules:", err);
+      }
+    };
+
+    fetchCapsules();
+  }, []);
 
   const currentDate = new Date().toISOString().split("T")[0];
 
@@ -124,7 +126,7 @@ const Dashboard = () => {
                   >
                     <div className="p-5 border-b border-gray-700">
                       <div className="flex justify-between items-start">
-                        <h2 className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                        <h2 className="text-lg font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent tracking-tighter">
                           {capsule.title}
                         </h2>
                         {activeTab === "sent" && (
@@ -157,14 +159,14 @@ const Dashboard = () => {
                           <span className="flex items-center gap-1">
                             <span className="text-xs text-gray-400">From:</span>
                             <span className="font-medium text-white">
-                              {capsule.from}
+                              {capsule.sentBy}
                             </span>
                           </span>
                         ) : (
                           <span className="flex items-center gap-1">
                             <span className="text-xs text-gray-400">To:</span>
                             <span className="font-medium text-white">
-                              {capsule.to}
+                              {capsule.recipientsName}
                             </span>
                           </span>
                         )}
@@ -204,7 +206,10 @@ const Dashboard = () => {
                                 d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                               />
                             </svg>
-                            Unlocks {capsule.unlockDate}
+                            Unlocks{" "}
+                            {new Date(capsule.unlockDate).toLocaleDateString(
+                              "en-GB"
+                            )}
                           </span>
                         )}
                       </div>
@@ -304,21 +309,21 @@ const Dashboard = () => {
                     <p className="text-gray-300">{selectedCapsule.message}</p>
                   </div>
 
-                  {selectedCapsule.images &&
-                    selectedCapsule.images.length > 0 && (
+                  {selectedCapsule.mediaFiles &&
+                    selectedCapsule.mediaFiles.length > 0 && (
                       <div className="mt-6">
                         <h3 className="text-lg font-semibold text-gray-200 mb-3">
                           Attachments
                         </h3>
                         <div className="max-h-80 overflow-y-auto pr-2 scrollbar-thin">
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            {selectedCapsule.images.map((imgSrc, index) => (
+                            {selectedCapsule.mediaFiles.map((imgSrc, index) => (
                               <div
                                 key={index}
                                 className="relative group overflow-hidden rounded-lg shadow-md"
                               >
                                 <img
-                                  src="/api/placeholder/400/320"
+                                  src={imgSrc.url}
                                   alt={`Capsule image ${index + 1}`}
                                   className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-105"
                                 />

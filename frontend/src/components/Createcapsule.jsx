@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
+import axios from "axios";
+import { toast } from "react-toastify";
 import {
   Camera,
   Calendar,
@@ -14,26 +16,30 @@ import {
 
 const CreateCapsule = ({ onCreate }) => {
   const [title, setTitle] = useState("");
-  const [mname, setMyName] = useState("");
-  const [rname, setReName] = useState("");
-  const [email, setEmail] = useState("");
+  const [sentBy, setMyName] = useState("");
+  const [recipientsName, setReName] = useState("");
+  const [recipientsEmail, setEmail] = useState("");
   const [unlockDate, setUnlockDate] = useState("");
   const [message, setMessage] = useState("");
   const [images, setImages] = useState([]);
+  const [imageFiles, setImageFiles] = useState([]);
   const [formStep, setFormStep] = useState(1);
   const [dateInputFocused, setDateInputFocused] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const totalSteps = 2;
 
   const handleImageUpload = (e) => {
-    console.log("Triggered!", e.target.files);
     const files = Array.from(e.target.files);
     const imageUrls = files.map((file) => URL.createObjectURL(file));
+
     setImages((prevImages) => [...prevImages, ...imageUrls]);
+    setImageFiles((prevFiles) => [...prevFiles, ...files]);
   };
 
   const removeImage = (index) => {
     setImages(images.filter((_, i) => i !== index));
+    setImageFiles(imageFiles.filter((_, i) => i !== index));
   };
 
   const nextStep = () => {
@@ -44,37 +50,68 @@ const CreateCapsule = ({ onCreate }) => {
     setFormStep(formStep - 1);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
-    const newCapsule = {
-      title,
-      id: Date.now(),
-      mname,
-      to: rname,
-      email,
-      unlockDate,
-      message,
-      images,
-    };
+    try {
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("sentBy", sentBy);
+      formData.append("recipientsName", recipientsName);
+      formData.append("recipientsEmail", recipientsEmail);
+      formData.append("unlockDate", unlockDate);
+      formData.append("message", message);
 
-    onCreate(newCapsule);
+      const token = localStorage.getItem("token");
 
-    confetti({
-      particleCount: 150,
-      spread: 120,
-      origin: { y: 0.6 },
-      colors: ["#06b6d4", "#8b5cf6", "#3b82f6"],
-    });
+      // Append all image files - matches the field name expected by multer in the backend
+      imageFiles.forEach((file) => {
+        formData.append("mediaFiles", file);
+      });
 
-    setTitle("");
-    setMyName("");
-    setReName("");
-    setEmail("");
-    setUnlockDate("");
-    setMessage("");
-    setImages([]);
-    setFormStep(1);
+      // Send request to the backend
+      const response = await axios.post(
+        `${import.meta.env.VITE_APP_URL}/capsules`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (onCreate) {
+        const newCapsule = {
+          ...response.data.capsule,
+          images,
+        };
+        onCreate(newCapsule);
+      }
+
+      confetti({
+        particleCount: 150,
+        spread: 120,
+        origin: { y: 0.6 },
+        colors: ["#06b6d4", "#8b5cf6", "#3b82f6"],
+      });
+
+      toast.success("Time capsule Created successfully!🎊");
+
+      setTitle("");
+      setMyName("");
+      setReName("");
+      setEmail("");
+      setUnlockDate("");
+      setMessage("");
+      setImages([]);
+      setImageFiles([]);
+      setFormStep(1);
+    } catch (error) {
+      console.error("Error creating time capsule:", error);
+      alert("Failed to create time capsule. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const formVariants = {
@@ -160,7 +197,7 @@ const CreateCapsule = ({ onCreate }) => {
                 <input
                   type="text"
                   placeholder="Your name"
-                  value={mname}
+                  value={sentBy}
                   onChange={(e) => setMyName(e.target.value)}
                   required
                   className="w-full p-3 pl-10  rounded-lg bg-gray-800 text-white text-sm placeholder-gray-400 focus:ring-2 focus:ring-cyan-400 focus:outline-none border border-gray-700 transition-all duration-300"
@@ -172,7 +209,7 @@ const CreateCapsule = ({ onCreate }) => {
                 <input
                   type="text"
                   placeholder="Recipient's name"
-                  value={rname}
+                  value={recipientsName}
                   onChange={(e) => setReName(e.target.value)}
                   required
                   className="w-full p-3 pl-10 rounded-lg text-sm bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-cyan-400 focus:outline-none border border-gray-700 transition-all duration-300"
@@ -184,7 +221,7 @@ const CreateCapsule = ({ onCreate }) => {
                 <input
                   type="email"
                   placeholder="Recipient's Email"
-                  value={email}
+                  value={recipientsEmail}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   className="w-full p-3 pl-10 rounded-lg text-sm bg-gray-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-cyan-400 focus:outline-none border border-gray-700 transition-all duration-300"
@@ -311,6 +348,7 @@ const CreateCapsule = ({ onCreate }) => {
                   className="flex-1 border border-gray-600 text-gray-300 font-medium px-6 py-3 rounded-lg hover:bg-gray-800 transition-all duration-300"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
+                  disabled={isSubmitting}
                 >
                   Back
                 </motion.button>
@@ -320,9 +358,38 @@ const CreateCapsule = ({ onCreate }) => {
                   className="flex-1 bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-semibold px-6 py-3 rounded-lg shadow-lg flex items-center justify-center gap-2 hover:from-purple-600 hover:to-cyan-600 transition-all duration-300"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
+                  disabled={isSubmitting}
                 >
-                  <Gift size={18} />
-                  Save
+                  {isSubmitting ? (
+                    <span className="flex items-center gap-2">
+                      <svg
+                        className="animate-spin h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Saving...
+                    </span>
+                  ) : (
+                    <>
+                      <Gift size={18} />
+                      Save
+                    </>
+                  )}
                 </motion.button>
               </motion.div>
             </motion.div>

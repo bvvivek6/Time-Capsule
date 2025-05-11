@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -38,7 +39,7 @@ export default function AuthPage() {
     setLoading(true);
 
     try {
-      const endpoint = isLogin ? "/login" : "/signup";
+      const endpoint = isLogin ? "/auth/login" : "/auth/signup";
       console.log(`Sending request to ${api.defaults.baseURL}${endpoint}`);
 
       const requestData = isLogin
@@ -65,7 +66,7 @@ export default function AuthPage() {
       api.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${response.data.token}`;
-
+      toast.success("Logged in Successfully!");
       navigate("/dashboard");
     } catch (err) {
       console.error("Auth error details:", err);

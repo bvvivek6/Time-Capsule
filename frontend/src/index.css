@@ -10,3 +10,17 @@ body {
 body::-webkit-scrollbar {
   display: none;
 }
+
+.custom-toast {
+  background-color: #000000 !important;
+  color: #f5f5f5 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  font-family: "Poppins", sans-serif;
+  padding: 12px 16px;
+}
+
+.custom-toast-body {
+  font-size: 0.6rem;
+  line-height: 1.4;
+}
