@@ -4,6 +4,7 @@ import Navbar from "./Navbar";
 import CreateCapsule from "./Createcapsule";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -43,9 +44,38 @@ const Dashboard = () => {
 
   const currentDate = new Date().toISOString().split("T")[0];
 
-  const handleDelete = (id) => {
-    const updated = sentCapsules.filter((capsule) => capsule.id !== id);
-    setSentCapsules(updated);
+  const handleDelete = async (id, capsule) => {
+    const token = localStorage.getItem("token");
+    const currentDate = new Date().toISOString().split("T")[0];
+
+    if (capsule.unlockDate <= currentDate) {
+      toast.error(
+        "You cannot delete a capsule that has already been unlocked."
+      );
+      return;
+    }
+
+    const yes = window.confirm("Are you sure you want to delete this capsule?");
+    if (!yes) {
+      return;
+    }
+
+    try {
+      const baseUrl = import.meta.env.VITE_API_URL;
+      await axios.delete(`${baseUrl}/capsules/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setSentCapsules((prevCapsules) =>
+        prevCapsules.filter((capsule) => capsule.id !== id)
+      );
+      toast.success("Capsule deleted successfully");
+    } catch (err) {
+      toast.error("Error deleting capsule");
+      console.error("Error deleting capsule:", err);
+    }
   };
 
   const capsulesToShow =
@@ -132,7 +162,7 @@ const Dashboard = () => {
                         {activeTab === "sent" && (
                           <button
                             className="ml-2 flex-shrink-0 opacity-70 hover:opacity-100 text-red-400 hover:text-red-500 transition-all p-1 rounded-full hover:bg-gray-700"
-                            onClick={() => handleDelete(capsule.id)}
+                            onClick={() => handleDelete(capsule._id, capsule)}
                             title="Delete Capsule"
                           >
                             <svg
@@ -145,7 +175,7 @@ const Dashboard = () => {
                               <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
                               <path
                                 fillRule="evenodd"
-                                d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
+                                d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
                               />
                             </svg>
                           </button>

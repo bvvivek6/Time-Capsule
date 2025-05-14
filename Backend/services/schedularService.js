@@ -72,13 +72,13 @@ exports.scheduleDailyCheck = () => {
       capsule.isUnlocked = true;
       await capsule.save();
 
-      // Send unlock email
-      await emailService.sendUnlockNotification(
-        capsule.recipientsEmail,
-        capsule.recipientsName,
-        capsule.title,
-        capsule._id
-      );
+      // // Send unlock email
+      // await emailService.sendUnlockNotification(
+      //   capsule.recipientsEmail,
+      //   capsule.recipientsName,
+      //   capsule.title,
+      //   capsule._id
+      // );
     }
   });
 };
