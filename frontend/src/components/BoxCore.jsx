@@ -3,10 +3,8 @@ import { motion } from "motion/react";
 import { cn } from "../lib/util";
 
 export const BoxesCore = ({ className, ...rest }) => {
-  const rows = new Array(150).fill(1);
-  const cols = new Array(100).fill(1);
-
-  //   let colors = ["#ffffff", "#7393B3", "#E5E4E2", "#6082B6"];
+  const rows = new Array(30).fill(1);
+  const cols = new Array(20).fill(1);
 
   let colors = [
     "#f9a8d4",
@@ -36,7 +34,7 @@ export const BoxesCore = ({ className, ...rest }) => {
       {...rest}
     >
       {rows.map((_, i) => (
-        <motion.div key={`row` + i} className="relative h-8 w-16 border-1">
+        <motion.div key={`row` + i} className="relative h-35 w-70 ">
           {cols.map((_, j) => (
             <motion.div
               whileHover={{
@@ -47,7 +45,7 @@ export const BoxesCore = ({ className, ...rest }) => {
                 transition: { duration: 2 },
               }}
               key={`col` + j}
-              className="relative h-8 w-16 border-1 border-[#131313dd] "
+              className="relative h-35 w-70 border-1  border-[#131313dd] "
             ></motion.div>
           ))}
         </motion.div>

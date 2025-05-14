@@ -27,15 +27,8 @@ const Home = () => {
 
   return (
     <div className="min-h-screen py-20 font-mono text-gray-100 bg-[#000000]  overflow-hidden relative">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-blue-500 rounded-full opacity-5 blur-3xl"></div>
-        <div className="absolute top-1/2 -left-40 w-96 h-96 bg-cyan-500 rounded-full opacity-5 blur-3xl"></div>
-        <div className="absolute -bottom-20 right-1/4 w-64 h-64 bg-purple-500 rounded-full opacity-5 blur-3xl"></div>
-      </div>
-
       <Navbar />
-
-      <section className="relative flex flex-col items-center min-h-[90vh] justify-center text-center  px-6 py-4">
+      <div className="relative flex flex-col items-center min-h-[90vh] justify-center text-center  px-6 py-4">
         <BoxesCore />
         <motion.div
           initial="hidden"
@@ -44,7 +37,7 @@ const Home = () => {
         >
           <motion.div className="mb-8" variants={fadeIn} custom={0}>
             <div className="relative w-24 h-24 mx-auto mb-4">
-              <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-full opacity-20 animate-pulse"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-full opacity-20 "></div>
               <div className="relative w-full h-full flex items-center justify-center">
                 <Clock size={48} className="text-cyan-400" />
               </div>
@@ -129,9 +122,9 @@ const Home = () => {
             </motion.div>
           </div>
         </motion.div>
-      </section>
+      </div>
 
-      <section className="py-20 px-6 relative">
+      <div className="py-20 px-6 relative">
         <div className="absolute inset-0 opacity-50"></div>
         <div className="relative max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-16 tracking-tighter">
@@ -205,9 +198,9 @@ const Home = () => {
             </motion.div>
           </div>
         </div>
-      </section>
+      </div>
 
-      <section className="py-20 px-6 relative">
+      <div className="py-20 px-6 relative">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-16 tracking-tighter">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
@@ -304,8 +297,8 @@ const Home = () => {
             </motion.div>
           </div>
         </div>
-      </section>
-      <section className="py-2 px-6 flex flex-col text-center items-center relative">
+      </div>
+      <div className="py-2 px-6 flex flex-col text-center items-center relative">
         <div className="relative  max-w-4xl mx-auto">
           <p className="text-sm text-[#4e6cbe] tracking-tighter w-[50vw] my-3">
             © {new Date().getFullYear()} TimeCapsule. All rights reserved.
@@ -322,7 +315,7 @@ const Home = () => {
             </p>
           </p>
         </div>
-      </section>
+      </div>
     </div>
   );
 };
