@@ -20,7 +20,7 @@ exports.initScheduler = async () => {
     capsule.isUnlocked = true;
     await capsule.save();
 
-    // Send unlock email
+    // Send unlock email to recipient(s)
     await emailService.sendUnlockNotification(
       capsule.recipientsEmail,
       capsule.recipientsName,
@@ -62,7 +62,7 @@ exports.scheduleDailyCheck = () => {
     console.log("Running daily capsule check...");
 
     const capsulesToUnlock = await TimeCapsule.find({
-      isUnlocked: true,
+      isUnlocked: false,
       unlockDate: { $lte: new Date() },
     });
 
@@ -72,13 +72,13 @@ exports.scheduleDailyCheck = () => {
       capsule.isUnlocked = true;
       await capsule.save();
 
-      // // Send unlock email
-      // await emailService.sendUnlockNotification(
-      //   capsule.recipientsEmail,
-      //   capsule.recipientsName,
-      //   capsule.title,
-      //   capsule._id
-      // );
+      // Send unlock email to recipient(s)
+      await emailService.sendUnlockNotification(
+        capsule.recipientsEmail,
+        capsule.recipientsName,
+        capsule.title,
+        capsule._id
+      );
     }
   });
 };
