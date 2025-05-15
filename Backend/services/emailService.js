@@ -65,4 +65,59 @@ exports.sendUnlockNotification = async (
   }
 };
 
+// Send a summary email to the recipient listing all unlocked capsules
+exports.sendUnlockSummaryEmail = async (
+  recipientEmail,
+  recipientName,
+  capsules
+) => {
+  try {
+    const capsuleList = capsules
+      .map(
+        (capsule) => `
+      <li style="margin-bottom: 12px;">
+        <strong>${capsule.title}</strong> (Unlock Date: ${new Date(
+          capsule.unlockDate
+        ).toLocaleString()})<br/>
+        <a href="${
+          process.env.FRONTEND_URL || process.env.FRONT_END_URL
+        }/capsules/${capsule._id}" style="color:#00ffff;">View Capsule</a>
+      </li>
+    `
+      )
+      .join("");
+    const mailOptions = {
+      from: process.env.GMAIL_USER,
+      to: recipientEmail,
+      subject: `Your Time Capsule(s) have been unlocked!`,
+      html: `
+        <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f0f2f; color: #e0f7fa; padding: 30px; border-radius: 12px; max-width: 600px; margin: 0 auto; box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);">
+          <h2 style="color: #00ffff; text-align: center;">🌌 Hello ${
+            recipientName || "there"
+          },</h2>
+          <p style="font-size: 16px; line-height: 1.6; color: #ccf2ff;">
+            The following Time Capsule(s) sent to your email have just been unlocked:
+          </p>
+          <ul style="font-size: 16px; line-height: 1.6; color: #b3ecff; list-style: disc; padding-left: 24px;">
+            ${capsuleList}
+          </ul>
+          <p style="font-size: 13px; color: #80deea;">
+            Didn’t expect this email? You can safely ignore it.
+          </p>
+          <hr style="border: none; border-top: 1px solid #00ffff; margin: 30px 0;" />
+          <p style="font-size: 12px; color: #4dd0e1; text-align: center;">
+            ⏳ Made with 💙 by the Time Capsule App Team
+          </p>
+        </div>
+      `,
+    };
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Summary email sent: ", info.response);
+    return info;
+  } catch (error) {
+    console.error("Error sending summary email:", error);
+    throw error;
+  }
+};
+
 // Remove old scheduleUnlockEmail logic, as scheduling is handled in schedularService.js
