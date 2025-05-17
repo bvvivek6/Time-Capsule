@@ -2,7 +2,6 @@ const schedule = require("node-schedule");
 const TimeCapsule = require("../models/capsuleModel");
 const emailService = require("./emailService");
 
-
 async function checkAndUnlockCapsules() {
   // Find all capsules to unlock
   const capsulesToUnlock = await TimeCapsule.find({
