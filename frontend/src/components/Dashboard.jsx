@@ -19,6 +19,8 @@ const Dashboard = () => {
 
   const [sentCapsules, setSentCapsules] = useState([]);
   const [receivedCapsules, setReceivedCapsules] = useState([]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [capsuleToDelete, setCapsuleToDelete] = useState(null);
 
   useEffect(() => {
     const fetchCapsules = async () => {
@@ -44,22 +46,8 @@ const Dashboard = () => {
 
   const currentDate = new Date().toISOString().split("T")[0];
 
-  const handleDelete = async (id, capsule) => {
+  const handleDelete = async (id) => {
     const token = localStorage.getItem("token");
-    const currentDate = new Date().toISOString().split("T")[0];
-
-    if (capsule.unlockDate <= currentDate) {
-      toast.error(
-        "You cannot delete a capsule that has already been unlocked."
-      );
-      return;
-    }
-
-    const yes = window.confirm("Are you sure you want to delete this capsule?");
-    if (!yes) {
-      return;
-    }
-
     try {
       const baseUrl = import.meta.env.VITE_API_URL;
       await axios.delete(`${baseUrl}/capsules/${id}`, {
@@ -67,15 +55,32 @@ const Dashboard = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-
       setSentCapsules((prevCapsules) =>
-        prevCapsules.filter((capsule) => capsule.id !== id)
+        prevCapsules.filter((capsule) => capsule._id !== id)
       );
       toast.success("Capsule deleted successfully");
     } catch (err) {
       toast.error("Error deleting capsule");
       console.error("Error deleting capsule:", err);
     }
+  };
+
+  const confirmDelete = (capsule) => {
+    setCapsuleToDelete(capsule);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (capsuleToDelete) {
+      handleDelete(capsuleToDelete._id);
+    }
+    setShowDeleteModal(false);
+    setCapsuleToDelete(null);
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteModal(false);
+    setCapsuleToDelete(null);
   };
 
   const capsulesToShow =
@@ -167,7 +172,7 @@ const Dashboard = () => {
                           {activeTab === "sent" && (
                             <button
                               className="ml-2 flex-shrink-0 opacity-70 hover:opacity-100 text-red-400 hover:text-red-500 transition-all p-1 rounded-full hover:bg-gray-700"
-                              onClick={() => handleDelete(capsule._id, capsule)}
+                              onClick={() => confirmDelete(capsule)}
                               title="Delete Capsule"
                             >
                               <svg
@@ -396,6 +401,41 @@ const Dashboard = () => {
                     </button>
                   </div>
                 </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {showDeleteModal && (
+              <motion.div
+                className="fixed inset-0 flex items-center justify-center bg-black/40 z-50"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <div className="bg-gray-900 rounded-xl p-8 shadow-2xl border border-gray-700 max-w-md w-full">
+                  <h2 className="text-xl font-bold text-red-400 mb-4">
+                    Delete Capsule?
+                  </h2>
+                  <p className="text-gray-200 mb-6">
+                    Deleting this capsule will also delete it for the receiver.
+                    Are you sure you want to continue?
+                  </p>
+                  <div className="flex justify-end gap-3">
+                    <button
+                      className="px-4 py-2 rounded bg-gray-700 text-gray-200 hover:bg-gray-600"
+                      onClick={handleDeleteCancel}
+                    >
+                      No
+                    </button>
+                    <button
+                      className="px-4 py-2 rounded bg-red-500 text-white hover:bg-red-600"
+                      onClick={handleDeleteConfirm}
+                    >
+                      Yes, Delete
+                    </button>
+                  </div>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
