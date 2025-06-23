@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { User, Clock, LogOut, ChevronDown, LogIn } from "lucide-react";
 import { toast } from "react-toastify";
 
@@ -11,17 +11,21 @@ const Navbar = () => {
   const [user, setUser] = useState(null);
 
   const navigate = useNavigate();
+  const location = useLocation();
   const profileRef = useRef(null);
 
   useEffect(() => {
     checkAuthStatus();
-  }, []);
+    const handleStorage = () => checkAuthStatus();
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, [location]);
 
   const checkAuthStatus = () => {
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
 
-    if (token && userData) {
+    if (token && userData && userData !== "undefined") {
       setIsAuthenticated(true);
       setUser(JSON.parse(userData));
     } else {
