@@ -14,20 +14,31 @@ const rateLimit = require("express-rate-limit");
 
 const PORT = process.env.PORT || 3000;
 
+// Debug: log the request origin
+app.use((req, res, next) => {
+  console.log("Request Origin:", req.headers.origin);
+  next();
+});
+
+// CORS middleware FIRST
+const mongoose = require("mongoose");
+require("dotenv").config();
+
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
+  .catch((err) => {
+    console.error("Failed to connect to MongoDB:", err.message);
+  });
+
 app.get("/", (req, res) => {
   res.send("Hello from the server side!!");
 });
 
 //connet to db
 require("./config/db");
-
-app.use(
-  cors({
-    origin: process.env.FRONT_END_URL,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
